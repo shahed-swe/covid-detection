@@ -1,0 +1,55 @@
+{%extends 'base.html'%}
+<!--  -->
+{%load static%}
+<!--  -->
+{%block main_content%}
+<!--  -->
+<section class="page-header">
+    <div class="container">
+        <h2>Contact</h2>
+        <ul class="thm-breadcrumb list-unstyled">
+            <li><a href="#">Home</a></li>
+            <li><span>Login</span></li>
+        </ul>
+        <!-- /.thm-breadcrumb -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /.page-header -->
+
+<section class="contact-one">
+    <div class="container">
+        <div class="block-title text-center">
+            <p>Want To Test</p>
+            <h3>Login YourSelf For Free Covid Test</h3>
+        </div>
+        <!-- /.block-title -->
+        <form method="POST" class="contact-one__form">
+            {%csrf_token%}
+            <div class="row">
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-12">
+                    <input type="email" name="email" placeholder="Email Address">
+                </div>
+                <div class="col-lg-12">
+                    <input type="text" name="password" placeholder="Password">
+                </div>
+                <!-- /.col-lg-6 -->
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-12 text-center">
+                    <button type="submit" class="thm-btn contact-one__btn">Login</button>
+                    <!-- /.thm-btn contact-one__btn -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </form>
+        <!-- /.contact-one__form -->
+        <!-- /.result -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /.contact-one -->
+
+<!--  -->
+{%endblock main_content%}
