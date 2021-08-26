@@ -8,15 +8,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+class PatientTestData(serializers.Serializer):
+    "this data will not be saved to any model"
+    heart_rate = serializers.CharField()
+    oxygen_level = serializers.CharField()
+    temperature = serializers.CharField()
 
-class OtherReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OtherReports
-        fields = ['user','pulse_rate','saturation_ratio', 'oxygen_level', 'temperature']
-
-    def validate(self, attrs):
-        print(attrs)
-
-    def create(self, validated_data):
-        pass
-
+    

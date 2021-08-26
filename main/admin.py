@@ -29,5 +29,5 @@ class UserAdmin(UserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(CovidTestImage)
 admin.site.register(CovidResultData)
-admin.site.register(OtherReports)
+# admin.site.register(OtherReports)
 admin.site.unregister(Group)

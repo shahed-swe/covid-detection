@@ -1,10 +1,10 @@
-from main.serializers import OtherReportSerializer
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from .models import *
+from .serializers import *
 # from numpy.lib.type_check import _imag_dispatcher
 # from werkzeug.utils import escape, secure_filename
 # from tensorflow.keras.models import load_model
@@ -175,38 +175,24 @@ class ReportViewSet(generics.GenericAPIView):
     authentication_classes = (TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
 
+    reportdata = []
+
     def post(self, request, format=None):
-        pulse_rate = request.data.get('pulse_rate')
-        saturation_ratio = request.data.get('saturation_ratio')
+        heart_rate = request.data.get('heart_rate')
         oxygen_level = request.data.get('oxygen_level')
         temperature = request.data.get('temperature')
-        userid = request.user.id
-        if not pulse_rate:
-            return Response({'pulse_rate': 'No pulse rate detected'}, status=status.HTTP_400_BAD_REQUEST)
-        if not saturation_ratio:
-            return Response({'saturation_ratio': 'No saturation ratio detected'}, status=status.HTTP_400_BAD_REQUEST)
-        if not oxygen_level:
-            return Response({'oxygen_level': 'No oxygen level detected'}, status=status.HTTP_400_BAD_REQUEST)
-        if not temperature:
-            return Response({'temperature': 'No temperature detected'}, status=status.HTTP_400_BAD_REQUEST)
-        if not userid:
-            return Response({'userid': 'No user detected'}, status=status.HTTP_400_BAD_REQUEST)
+        if heart_rate != "" and oxygen_level != "" and temperature != "":
+            self.reportdata.append({
+                "heart_rate" : heart_rate,
+                "oxygen_level" : oxygen_level,
+                "temperature" : temperature
 
-
-        report = OtherReports(
-            pulse_rate = pulse_rate,
-            saturation_ratio = saturation_ratio,
-            oxygen_level = oxygen_level,
-            temperature = temperature,
-            user = request.user
-        )
-        report.save()
-        serializer = OtherReportSerializer(report)
-
-        return Response({'message': 'New Report Created', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+            })
+            return Response({'message':'new data found'})
+        else:
+            return Response({'message':'No data'})
 
     def get(self, request, format=None):
-        queryset = OtherReports.objects.filter(user=request.user)
-        print(queryset)
-        serializer = OtherReportSerializer(queryset, many=True)
-        return Response({'message': 'Reports', 'data': serializer.data}, status=status.HTTP_200_OK)
+        print(self.reportdata)
+        newdata = PatientTestData(self.reportdata, many=True).data
+        return Response(newdata)

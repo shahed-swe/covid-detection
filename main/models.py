@@ -31,6 +31,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name + self.last_name
 
 
+class Doctor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.first_name + ' ' + self.user.last_name
+
+class Patient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.first_name + ' ' + self.user.last_name
+
 class CovidTestImage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     chest_xray = models.ImageField(upload_to="chestXray", blank=True)
@@ -51,13 +63,10 @@ class CovidResultData(models.Model):
         return self.user.first_name + ' ' + self.user.last_name + ' ->' + str(self.pk)
 
 
-class OtherReports(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    pulse_rate = models.FloatField()
-    saturation_ratio = models.FloatField()
-    temperature = models.FloatField()
-    oxygen_level = models.FloatField()
-    created_at = models.DateTimeField(default=timezone.now)
+class ConditionInfo(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    condition_info = models.CharField(max_length=120)
 
     def __str__(self):
-        return  'Report of {} -> {}'.format(self.user.first_name, self.pk) 
+        return  'Condition of {} -> {}'.format(self.user.first_name, self.pk) 
