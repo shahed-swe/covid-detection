@@ -1,6 +1,7 @@
 from django.db.models import fields
 from rest_framework import serializers
 from .models import *
+from django.utils import timezone
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -9,9 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PatientTestData(serializers.Serializer):
-    "this data will not be saved to any model"
+    """this data will not be saved to any model"""
     heart_rate = serializers.CharField()
     oxygen_level = serializers.CharField()
     temperature = serializers.CharField()
+    report_time = serializers.DateTimeField()
 
     

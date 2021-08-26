@@ -25,6 +25,7 @@ from rest_framework.response import Response
 
 # Create your views here.
 def home(request):
+    """this view is only for rendering home template"""
     context = {"title":"Home | Covid Test"}
     return render(request, 'home.html', context)
 
@@ -121,6 +122,7 @@ def home(request):
 
 
 def myregistration(request):
+    """this view is for registering user"""
     if request.user.is_authenticated:
         return redirect('/')
     if request.method == "POST":
@@ -147,6 +149,7 @@ def myregistration(request):
 
 
 def mylogin(request):
+    """this view is only for authenticating a user"""
     if request.user.is_authenticated:
         return redirect('/')
 
@@ -166,18 +169,25 @@ def mylogin(request):
 
 
 def mylogout(request):
+    """this is only for deauthenticating a user"""
     logout(request)
     return redirect('/login')
 
 
 
 class ReportViewSet(generics.GenericAPIView):
+    """this view is for getting sensor data from nodemcu"""
     authentication_classes = (TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
 
+
+    """for storing report data temporarily"""
     reportdata = []
 
     def post(self, request, format=None):
+        """this is just a post method
+            this will only work when a user try to push a post method
+        """
         heart_rate = request.data.get('heart_rate')
         oxygen_level = request.data.get('oxygen_level')
         temperature = request.data.get('temperature')
@@ -185,14 +195,27 @@ class ReportViewSet(generics.GenericAPIView):
             self.reportdata.append({
                 "heart_rate" : heart_rate,
                 "oxygen_level" : oxygen_level,
-                "temperature" : temperature
-
+                "temperature" : temperature,
+                "report_time": timezone.now
             })
             return Response({'message':'new data found'})
         else:
             return Response({'message':'No data'})
 
     def get(self, request, format=None):
-        print(self.reportdata)
-        newdata = PatientTestData(self.reportdata, many=True).data
-        return Response(newdata)
+        """this will work only when a user try to get those temporary data"""
+        newdata = PatientTestData(self.reportdata[::-1], many=True).data
+        filterdata = newdata[0:1]
+        return Response(filterdata)
+
+
+def show_report_graph(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    if request.user.is_doctor:
+        return redirect('/')
+    context = {
+        "title": "Patient Report Graph",
+        "token": Token.objects.get(user=request.user)
+    }
+    return render(request, 'patient_report_graph.html', context)

@@ -70,7 +70,18 @@
                                 <a href="{%url 'mylogin'%}">Login</a>
 
                             </li>
-                            {%else%}
+                            {%elif user.is_patient%}
+                            <li class="dropdown">
+                                <a href="{%url 'show_report_graph'%}">Report</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="{%url 'mylogout'%}">Logout</a>
+
+                            </li>
+                            {%elif user.is_doctor%}
+                            <li class="dropdown">
+                                <a href="{%url 'show_report_graph'%}">Report</a>
+                            </li>
                             <li class="dropdown">
                                 <a href="{%url 'mylogout'%}">Logout</a>
 
@@ -80,7 +91,7 @@
                     </div>
                     <!-- /.main-nav__cta -->
                     <div class="main-nav__right">
-                        <a href="{%url 'detectchest'%}" class="main-nav__btn">Detect COVID</a>
+                        {% comment %} <a href="{%url 'detectchest'%}" class="main-nav__btn">Detect COVID</a> {% endcomment %}
                         <!-- /.main-nav__btn -->
                     </div>
                     <!-- /.main-nav__right -->
@@ -226,6 +237,8 @@
     <!-- template scripts -->
     <script src="{%static 'js/theme.js'%}"></script>
     <script src="{%static 'js/testimonials-owl.carousel.config.js'%}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
     {%block scripts%}
     <!--  -->
     {%endblock scripts%}

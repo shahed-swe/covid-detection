@@ -32,12 +32,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Doctor(models.Model):
+    """this is a doctor user model"""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
 
 class Patient(models.Model):
+    """this is a patient user model"""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -52,6 +54,7 @@ class CovidTestImage(models.Model):
         return self.user.first_name + ' ' +self.user.last_name +' -> '+str(self.date_entered)
 
 class CovidResultData(models.Model):
+    """this model has been created to store the covid-19 scan result"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     resnet = models.CharField(max_length=255)
     vgg = models.CharField(max_length=255)
@@ -64,6 +67,7 @@ class CovidResultData(models.Model):
 
 
 class ConditionInfo(models.Model):
+    """this model has been created to store a patient's recent condition info"""
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     condition_info = models.CharField(max_length=120)

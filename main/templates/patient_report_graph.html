@@ -1,0 +1,95 @@
+{%extends 'base.html'%}
+<!-- extending base html -->
+{%load static%}
+<!-- loading static files -->
+{%block main_content%}
+<!-- main block started -->
+<style>
+    .patient-report {
+        height: 800px;
+        width: 600px;
+        /* margin: 150px 50px 50px 50px; */
+    }
+    
+    .site-header-one {
+        background-color: #0A1C4F;
+    }
+    
+    .header-tag {
+        margin-top: 150px;
+    }
+</style>
+<div class="header-tag">
+    <h1>Live Graph of Patient's Sensor Data</h1>
+</div>
+<div class="patient-report">
+    <canvas id="line-chart" width="800" height="450"></canvas>
+</div>
+
+<!-- main block ended -->
+{%endblock main_content%}
+
+<!-- scritps -->
+{%block scripts%}
+<!-- script started -->
+<script>
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Token {{token}}'
+        }
+    };
+    let newdata = []
+
+    function loadData() {
+        setInterval(async() => {
+            const response = await fetch(`http://192.168.0.103/reports/`, config)
+                .then(response => response.json())
+                .then(data => {
+                    newdata.push({
+                        'temperature': data[0].temperature,
+                        'heart_rate': data[0].heart_rate,
+                        'oxygen_level': data[0].oxygen_level,
+                        'report_time': data[0].report_time,
+                    })
+                    console.log(newdata.length);
+                })
+        }, 3000)
+    }
+    loadData();
+
+
+    new Chart(document.getElementById("line-chart"), {
+        animationEnabled: true,
+        type: 'line',
+        data: {
+            labels: newdata[0].report_time,
+            datasets: [{
+                data: newdata[0].oxygen_level,
+                label: "Oxygen Level",
+                borderColor: "#3e95cd",
+                fill: false
+            }, {
+                data: newdata[0].heart_rate,
+                label: "Heart Rate",
+                borderColor: "#8e5ea2",
+                fill: false
+            }, {
+                data: newdata.[0].temperature,
+                label: "Temperature",
+                borderColor: "#3cba9f",
+                fill: false
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Patient Reports Per Second'
+            }
+        }
+    });
+    setInterval(chart.render(), 3000);
+</script>
+
+<!-- script ended -->
+{%endblock scripts%}
