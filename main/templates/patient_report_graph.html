@@ -5,12 +5,6 @@
 {%block main_content%}
 <!-- main block started -->
 <style>
-    .patient-report {
-        height: 800px;
-        width: 600px;
-        /* margin: 150px 50px 50px 50px; */
-    }
-    
     .site-header-one {
         background-color: #0A1C4F;
     }
@@ -19,12 +13,23 @@
         margin-top: 150px;
     }
 </style>
-<div class="header-tag">
+<div class="header-tag container">
     <h1>Live Graph of Patient's Sensor Data</h1>
 </div>
-<div class="patient-report">
-    <canvas id="line-chart" width="800" height="450"></canvas>
+<div class="container">Patient Data
+    <div class="row">
+        <div class="patient-report col-6">
+            <canvas id="heart_rate_chart"></canvas>
+        </div>
+        <div class="patient-report col-6">
+            <canvas id="oxygen_chart"></canvas>
+        </div>
+        <div class="patient-report col-6">
+            <canvas id="temperature_chart"></canvas>
+        </div>
+    </div>
 </div>
+
 
 <!-- main block ended -->
 {%endblock main_content%}
@@ -39,56 +44,109 @@
             'Authorization': 'Token {{token}}'
         }
     };
-    let newdata = []
-
-    function loadData() {
-        setInterval(async() => {
-            const response = await fetch(`http://192.168.0.103/reports/`, config)
-                .then(response => response.json())
-                .then(data => {
-                    newdata.push({
-                        'temperature': data[0].temperature,
-                        'heart_rate': data[0].heart_rate,
-                        'oxygen_level': data[0].oxygen_level,
-                        'report_time': data[0].report_time,
-                    })
-                    console.log(newdata.length);
-                })
-        }, 3000)
-    }
-    loadData();
 
 
-    new Chart(document.getElementById("line-chart"), {
+    var temperature = []
+    var heart_rate = []
+    var oxygen_level = []
+    var datetime = []
+    var time = []
+
+    var chartheart_rate = new Chart(document.getElementById("heart_rate_chart"), {
         animationEnabled: true,
         type: 'line',
         data: {
-            labels: newdata[0].report_time,
+            labels: time,
             datasets: [{
-                data: newdata[0].oxygen_level,
-                label: "Oxygen Level",
-                borderColor: "#3e95cd",
-                fill: false
-            }, {
-                data: newdata[0].heart_rate,
+                data: heart_rate,
                 label: "Heart Rate",
-                borderColor: "#8e5ea2",
-                fill: false
-            }, {
-                data: newdata.[0].temperature,
-                label: "Temperature",
-                borderColor: "#3cba9f",
+                borderColor: "#3e95cd",
                 fill: false
             }]
         },
         options: {
             title: {
                 display: true,
-                text: 'Patient Reports Per Second'
+                text: 'Patient Heart Rate Per Second'
             }
         }
     });
-    setInterval(chart.render(), 3000);
+
+    var chartoxygen_level = new Chart(document.getElementById("oxygen_chart"), {
+        animationEnabled: true,
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                data: oxygen_level,
+                label: "Temperature",
+                borderColor: "#3e95cd",
+                fill: false
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Patient Oxygen Rate Per Second'
+            }
+        }
+    });
+
+    var charttemperature = new Chart(document.getElementById("temperature_chart"), {
+        animationEnabled: true,
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                data: temperature,
+                label: "Oxygen Level",
+                borderColor: "#3e95cd",
+                fill: false
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Patient Temperature Rate Per Second'
+            }
+        }
+    });
+
+
+
+    function loadData() {
+        setInterval(async() => {
+            const response = await fetch(`http://192.168.0.103/reports/`, config)
+                .then(response => response.json())
+                .then(data => {
+                    temperature.push(parseFloat(data[0].temperature))
+                    heart_rate.push(parseFloat(data[0].heart_rate))
+                    oxygen_level.push(parseFloat(data[0].oxygen_level))
+                    datetime.push(data[0].report_time)
+
+                })
+            if (temperature.length > 10 || heart_rate.length > 10 || oxygen_level.length > 10 || datetime.length > 10) {
+                temperature.shift(10)
+                heart_rate.shift(10)
+                oxygen_level.shift(10)
+                datetime.shift(10)
+            }
+            var date = new Date(datetime[0]);
+            var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+            chartheart_rate.data.labels.push(time)
+            chartoxygen_level.data.labels.push(time)
+            charttemperature.data.labels.push(time)
+            if (chartheart_rate.data.labels.length > 10 || chartoxygen_level.data.labels.length > 10 || charttemperature.data.labels.length > 10) {
+                chartheart_rate.data.labels.shift();
+                chartoxygen_level.data.labels.shift();
+                charttemperature.data.labels.shift();
+            }
+            chartheart_rate.update();
+            chartoxygen_level.update();
+            charttemperature.update();
+        }, 1000)
+    }
+    loadData();
 </script>
 
 <!-- script ended -->

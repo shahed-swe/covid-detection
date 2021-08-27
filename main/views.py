@@ -198,6 +198,12 @@ class ReportViewSet(generics.GenericAPIView):
                 "temperature" : temperature,
                 "report_time": timezone.now
             })
+
+            if float(heart_rate) > 60 and float(heart_rate) < 100 and float(oxygen_level) > 93 and float(temperature) > 96 and float(temperature)< 99:
+                print("Patient is normal")
+            else:
+                print("Patient Condition is Critical")
+
             return Response({'message':'new data found'})
         else:
             return Response({'message':'No data'})
