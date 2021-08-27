@@ -13,8 +13,7 @@ unsigned long timedelay = 5000;
 void setup() {
   Serial.begin(9600);
   delay(10);
-  int signal = analogRead(A0);
-  float bpm = ((signal/4)/3.1);
+  
   Serial.println();
   Serial.println(); Serial.print("Connecting....");
   Serial.println(ssid);
@@ -48,6 +47,8 @@ void loop() {
       WiFiClient client;
       HTTPClient http;
       const char* server = "http://192.168.0.103/reports/";
+      int signal = analogRead(A0);
+      float bpm = ((signal / 4) / 3.1);
       http.begin(client, server);
       http.addHeader("Content-Type","application/x-www-form-urlencoded");
       http.addHeader("Authorization","Token ac0308a6bbe5e5592e4ef8fa76f6ec95a003ddb4");
