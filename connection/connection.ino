@@ -54,7 +54,7 @@ void loop() {
       if(mlx.readAmbientTempC() != 0.0 && mlx.readObjectTempC() != 0.0 && mlx.readAmbientTempF() != 0.0){
         String requestData = "heart_rate="+String(bpm,2)+"&oxygen_level="+String(bpm,2)+"&temperature="+String(mlx.readAmbientTempF(),2);
         int dataCode = http.POST(requestData);
-        Serial.println(mlx.readObjectTempC());
+        Serial.print("My BPM= "); Serial.println(bpm);
         Serial.println(mlx.readObjectTempF());
         Serial.print("HTTp Response Code:");
         Serial.println(String(dataCode));
