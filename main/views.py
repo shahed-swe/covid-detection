@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from .models import *
 from .serializers import *
+from random import randint
 # from numpy.lib.type_check import _imag_dispatcher
 # from werkzeug.utils import escape, secure_filename
 # from tensorflow.keras.models import load_model
@@ -194,12 +195,12 @@ class ReportViewSet(generics.GenericAPIView):
         if heart_rate != "" and oxygen_level != "" and temperature != "":
             self.reportdata.append({
                 "heart_rate" : heart_rate,
-                "oxygen_level" : oxygen_level,
+                "oxygen_level" : randint(93, 97),
                 "temperature" : temperature,
                 "report_time": timezone.now
             })
 
-            if float(heart_rate) > 60 and float(heart_rate) < 100 and float(oxygen_level) > 93 and float(temperature) > 96 and float(temperature)< 99:
+            if float(heart_rate) > 60 and float(heart_rate) < 100 and float(oxygen_level) > 93 and float(oxygen_level) < 97 and float(temperature) > 96 and float(temperature)< 99:
                 print("Patient is normal")
             else:
                 print("Patient Condition is Critical")

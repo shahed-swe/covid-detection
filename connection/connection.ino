@@ -13,6 +13,8 @@ unsigned long timedelay = 5000;
 void setup() {
   Serial.begin(9600);
   delay(10);
+  int signal = analogRead(A0);
+  float bpm = ((signal/4)/3.1);
   Serial.println();
   Serial.println(); Serial.print("Connecting....");
   Serial.println(ssid);
@@ -50,7 +52,7 @@ void loop() {
       http.addHeader("Content-Type","application/x-www-form-urlencoded");
       http.addHeader("Authorization","Token ac0308a6bbe5e5592e4ef8fa76f6ec95a003ddb4");
       if(mlx.readAmbientTempC() != 0.0 && mlx.readObjectTempC() != 0.0 && mlx.readAmbientTempF() != 0.0){
-        String requestData = "heart_rate="+String(mlx.readAmbientTempC(),2)+"&oxygen_level="+String(mlx.readObjectTempC(),2)+"&temperature="+String(mlx.readAmbientTempF(),2);
+        String requestData = "heart_rate="+String(bpm,2)+"&oxygen_level="+String(bpm,2)+"&temperature="+String(mlx.readAmbientTempF(),2);
         int dataCode = http.POST(requestData);
         Serial.println(mlx.readObjectTempC());
         Serial.println(mlx.readObjectTempF());
