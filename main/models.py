@@ -66,11 +66,19 @@ class CovidResultData(models.Model):
         return self.user.first_name + ' ' + self.user.last_name + ' ->' + str(self.pk)
 
 
+
+class assignDoctor(models.Model):
+    patient = models.OneToOneField(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{} is assigned with {}".format(self.patient.user.first_name, self.doctor.user.first_name)
+
+
 class ConditionInfo(models.Model):
     """this model has been created to store a patient's recent condition info"""
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(assignDoctor, on_delete=models.CASCADE)
     condition_info = models.CharField(max_length=120)
 
     def __str__(self):
-        return  'Condition of {} -> {}'.format(self.user.first_name, self.pk) 
+        return  '{} -> {}'.format(self.doctor.patient.user.first_name, self.condition_info) 

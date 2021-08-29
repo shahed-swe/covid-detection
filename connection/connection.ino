@@ -2,7 +2,8 @@
 #include <LiquidCrystal.h>
 #include <ESP8266HTTPClient.h>
 #include <Adafruit_MLX90614.h>
-
+const int PulseSensorHRWire = A0;
+int Signal;
 
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 const char* ssid = "Rivendol";
@@ -47,24 +48,27 @@ void loop() {
       WiFiClient client;
       HTTPClient http;
       const char* server = "http://192.168.0.103/reports/";
-      int signal = analogRead(A0);
-      float bpm = ((signal / 4) / 3.1);
+      Signal = analogRead(PulseSensorHRWire);
+      float bpm = ((Signal / 4) / 3.1);
       http.begin(client, server);
       http.addHeader("Content-Type","application/x-www-form-urlencoded");
       http.addHeader("Authorization","Token ac0308a6bbe5e5592e4ef8fa76f6ec95a003ddb4");
       if(mlx.readAmbientTempC() != 0.0 && mlx.readObjectTempC() != 0.0 && mlx.readAmbientTempF() != 0.0){
         String requestData = "heart_rate="+String(bpm,2)+"&oxygen_level="+String(bpm,2)+"&temperature="+String(mlx.readAmbientTempF(),2);
         int dataCode = http.POST(requestData);
-        Serial.print("My BPM= "); Serial.println(bpm);
-        Serial.println(mlx.readObjectTempF());
-        Serial.print("HTTp Response Code:");
-        Serial.println(String(dataCode));
+        lcd.setCursor (0,0);
+        lcd.print("MyBPM:");
+        lcd.setCursor(6,0);
+        lcd.print(bmp);
+        lcd.setCursor(0,1);
+        lcd.print("Temp:  ");
+        lcd.setCursor(6,1);
+        lcd.print(mlx.readObjectTempF());
         http.end();
       }
       else{
         Serial.println("No Data");
       }
-      
     }else{
       Serial.println("Wifi disconnected");
     }

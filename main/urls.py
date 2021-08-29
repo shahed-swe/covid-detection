@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout/', views.mylogout, name='mylogout'),
     path('reports/', views.ReportViewSet.as_view(), name='reports'),
     path('reportgraph/', views.show_report_graph, name="show_report_graph"),
+    path('show_report/', views.show_condition_report_doctor, name="show_condition_report_doctor")
 ]

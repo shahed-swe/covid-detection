@@ -201,9 +201,10 @@ class ReportViewSet(generics.GenericAPIView):
             })
 
             if float(heart_rate) > 60 and float(heart_rate) < 100 and float(oxygen_level) > 93 and float(oxygen_level) < 97 and float(temperature) > 96 and float(temperature)< 99:
-                print("Patient is normal")
+                print("Condition is ok right now")
+
             else:
-                print("Patient Condition is Critical")
+                print("Condition is not good. Please checkup your patient")
 
             return Response({'message':'new data found'})
         else:
@@ -226,3 +227,4 @@ def show_report_graph(request):
         "token": Token.objects.get(user=request.user)
     }
     return render(request, 'patient_report_graph.html', context)
+

@@ -13,7 +13,7 @@ class UserAdmin(UserAdmin):
     list_filter = ('email', 'is_staff', 'is_active', 'is_superuser',
                    'is_doctor', 'is_patient')
     fieldsets = (
-        (None, {'fields': ('email', 'password','age','address','profile_image')}),
+        (None, {'fields': ('first_name','last_name','email', 'password','age','address','profile_image')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 
          'is_doctor','is_patient')}),
     )
@@ -29,5 +29,9 @@ class UserAdmin(UserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(CovidTestImage)
 admin.site.register(CovidResultData)
+admin.site.register(Doctor)
+admin.site.register(Patient)
 # admin.site.register(OtherReports)
 admin.site.unregister(Group)
+admin.site.register(assignDoctor)
+admin.site.register(ConditionInfo)
