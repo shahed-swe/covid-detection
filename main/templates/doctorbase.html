@@ -10,20 +10,20 @@
     <meta name="author" content="pixelcave">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
-    <link rel="shortcut icon" href="{%static 'front/img/favicon.png'%}">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon57.png" sizes="57x57">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon72.png" sizes="72x72">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon76.png" sizes="76x76">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon114.png" sizes="114x114">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon120.png" sizes="120x120">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon144.png" sizes="144x144">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon152.png" sizes="152x152">
-    <link rel="apple-touch-icon" href="{% static 'front/' %}img/icon180.png" sizes="180x180">
-    <link rel="stylesheet" href="{% static 'front/' %}css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'front/' %}css/plugins.css">
-    <link rel="stylesheet" href="{% static 'front/' %}css/main.css">
-    <link rel="stylesheet" href="{% static 'front/' %}css/themes.css">
-    <script src="{% static 'front/' %}js/vendor/modernizr.min.js"></script>
+    <link rel="shortcut icon" href="{%static 'backend/img/favicon.png'%}">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon57.png" sizes="57x57">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon72.png" sizes="72x72">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon76.png" sizes="76x76">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon114.png" sizes="114x114">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon120.png" sizes="120x120">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon144.png" sizes="144x144">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon152.png" sizes="152x152">
+    <link rel="apple-touch-icon" href="{% static 'backend/' %}img/icon180.png" sizes="180x180">
+    <link rel="stylesheet" href="{% static 'backend/' %}css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'backend/' %}css/plugins.css">
+    <link rel="stylesheet" href="{% static 'backend/' %}css/main.css">
+    <link rel="stylesheet" href="{% static 'backend/' %}css/themes.css">
+    <script src="{% static 'backend/' %}js/vendor/modernizr.min.js"></script>
 </head>
 
 <body>
@@ -39,103 +39,26 @@
             <div id="sidebar">
                 <div id="sidebar-scroll">
                     <div class="sidebar-content">
-                        <a href="{%url 'home'%}" class="sidebar-brand">
-                            {%if user.is_superuser%}
-                                <i class="gi gi-flash"></i><span class="sidebar-nav-mini-hide"><strong>Admin </strong>Dashboard</span>
-                            {%elif user.is_doctor%}
+                        <a href="{%url 'doctorhome'%}" class="sidebar-brand">
                                 <i class="gi gi-flash"></i><span class="sidebar-nav-mini-hide"><strong>Dr. </strong>Dashboard</span>
-                            {%elif user.is_assistant%}
-                                <i class="gi gi-flash"></i><span class="sidebar-nav-mini-hide"><strong>Assist. </strong>Dashboard</span>
-                            {%elif user.is_moderator%}
-                                <i class="gi gi-flash"></i><span class="sidebar-nav-mini-hide"><strong>Mod. </strong>Dashboard</span>
-                            {%endif%}
                         </a>
                         <div class="sidebar-section sidebar-user clearfix sidebar-nav-mini-hide">
                             <div class="sidebar-user-avatar">
-                                <a href="{%url 'user_profile'%}">
-                                    <img src="{% static 'front/' %}img/placeholders/avatars/avatar2.jpg" alt="avatar">
+                                <a href="{%url 'doctorhome'%}">
+                                    <img src="{% static 'backend/' %}img/placeholders/avatars/avatar2.jpg" alt="avatar">
                                 </a>
                             </div>
                             <div class="sidebar-user-name">{{user.first_name | title}}</div>
                             <div class="sidebar-user-links">
-                                <a href="{%url 'user_profile'%}" data-toggle="tooltip" data-placement="bottom" title="Profile"><i class="gi gi-user"></i></a>
-                                <a href="{%url 'home'%}" data-toggle="tooltip" data-placement="bottom" title="Report"><i class="gi gi-envelope"></i></a>
-                                <a href="{%url 'home'%}" class="enable-tooltip" data-placement="bottom" title="Edit Profile"><i class="gi gi-cogwheel"></i></a>
+                                <a href="{%url 'doctorhome'%}" data-toggle="tooltip" data-placement="bottom" title="Profile"><i class="gi gi-user"></i></a>
+                                <a href="{%url 'doctorhome'%}" data-toggle="tooltip" data-placement="bottom" title="Report"><i class="gi gi-envelope"></i></a>
+                                <a href="{%url 'doctorhome'%}" class="enable-tooltip" data-placement="bottom" title="Edit Profile"><i class="gi gi-cogwheel"></i></a>
                                 <a href="{%url 'mylogout'%}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="gi gi-exit"></i></a>
                             </div>
                         </div>
                         <ul class="sidebar-nav">
                             <li>
-                                <a href="{%url 'home'%}" class=" active"><i class="gi gi-stopwatch sidebar-nav-icon"></i><span class="sidebar-nav-mini-hide">Dashboard</span></a>
-                            </li>
-                            <li>
-                                {%if user.is_superuser%}
-                                <a href="#" class="sidebar-nav-menu"><i class="fa fa-angle-left sidebar-nav-indicator sidebar-nav-mini-hide"></i><i class="fa fa-home sidebar-nav-icon"></i><span class="sidebar-nav-mini-hide">User Control</span></a>
-                                <ul>
-                                    <li>
-                                        <a href="{%url 'patient_crud'%}">Student Information</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'addDoctorInformation'%}">Doctor Information</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'crudAssistant'%}">Assistant Information</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'crudModerator'%}">Moderator Information</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'crudDriver'%}">Driver Information</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'control_info'%}">Control Info</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'emergency_msg'%}">Emergency Messages</a>
-                                    </li>
-
-                                </ul>
-                                {%elif user.is_doctor%}
-                                <a href="#" class="sidebar-nav-menu"><i class="fa fa-angle-left sidebar-nav-indicator sidebar-nav-mini-hide"></i><i class="fa fa-home sidebar-nav-icon"></i><span class="sidebar-nav-mini-hide">Doc Control</span></a>
-                                <ul>
-                                    <li>
-                                        <a href="{%url 'give_prescription'%}">Give Prescription</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'health_condition'%}">Patient health Check</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'feedback'%}">Feedback's</a>
-                                    </li>
-                                </ul>
-                                {%elif user.is_assistant%}
-                                <a href="#" class="sidebar-nav-menu"><i class="fa fa-angle-left sidebar-nav-indicator sidebar-nav-mini-hide"></i><i class="fa fa-home sidebar-nav-icon"></i><span class="sidebar-nav-mini-hide">Assist Control</span></a>
-                                <ul>
-                                    <li>
-                                        <a href="{%url 'emergency_request'%}">Emergency Requests</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'add_hospital_info'%}">Add Hospital Information</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'set_hospital_route'%}">Set Hospital Route</a>
-                                    </li>
-
-                                    <li>
-                                        <a href="{%url 'set_billing_info'%}">Set Billing Information</a>
-                                    </li>
-                                </ul>
-                                {%elif user.is_moderator%}
-                                <a href="#" class="sidebar-nav-menu"><i class="fa fa-angle-left sidebar-nav-indicator sidebar-nav-mini-hide"></i><i class="fa fa-home sidebar-nav-icon"></i><span class="sidebar-nav-mini-hide">Mod. Control</span></a>
-                                <ul>
-                                    <li>
-                                        <a href="{%url 'medicine_company_add'%}">Add Medicine Company</a>
-                                    </li>
-                                    <li>
-                                        <a href="{%url 'add_medicine'%}">Add Medicine's</a>
-                                    </li>
-                                </ul>
-                                {%endif%}
+                                <a href="{%url 'doctorhome'%}" class=" active"><i class="gi gi-stopwatch sidebar-nav-icon"></i><span class="sidebar-nav-mini-hide">Dashboard</span></a>
                             </li>
                         </ul>
                     </div>
@@ -176,13 +99,13 @@
 
                         <li class="dropdown">
                             <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="{% static 'front/' %}img/placeholders/avatars/avatar2.jpg" alt="avatar"> <i class="fa fa-angle-down"></i>
+                                <img src="{% static 'backend/' %}img/placeholders/avatars/avatar2.jpg" alt="avatar"> <i class="fa fa-angle-down"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
                                 <li class="dropdown-header text-center">Account</li>
                                 <li class="divider"></li>
                                 <li>
-                                    <a href="/profile">
+                                    <a href="#">
                                         <i class="fa fa-user fa-fw pull-right"></i> Profile
                                     </a>
                                     <!-- Opens the user settings modal that can be found at the bottom of each page (page_footer.html in PHP version) -->
@@ -292,18 +215,18 @@
     <!-- END User Settings -->
 
     <!-- jQuery, Bootstrap.js, jQuery plugins and Custom JS code -->
-    <script src="{% static 'front/' %}js/vendor/jquery.min.js"></script>
-    <script src="{% static 'front/' %}js/vendor/bootstrap.min.js"></script>
-    <script src="{% static 'front/' %}js/plugins.js"></script>
-    <script src="{% static 'front/' %}js/app.js"></script>
+    <script src="{% static 'backend/' %}js/vendor/jquery.min.js"></script>
+    <script src="{% static 'backend/' %}js/vendor/bootstrap.min.js"></script>
+    <script src="{% static 'backend/' %}js/plugins.js"></script>
+    <script src="{% static 'backend/' %}js/app.js"></script>
 
     <!-- Google Maps API Key (you will have to obtain a Google Maps API key to use Google Maps) -->
     <!-- For more info please have a look at https://developers.google.com/maps/documentation/javascript/get-api-key#key -->
     <script src="https://maps.googleapis.com/maps/api/js?key="></script>
-    <script src="{% static 'front/' %}js/helpers/gmaps.min.js"></script>
+    <script src="{% static 'backend/' %}js/helpers/gmaps.min.js"></script>
 
     <!-- Load and execute javascript code used only in this page -->
-    <script src="{% static 'front/' %}js/pages/index.js"></script>
+    <script src="{% static 'backend/' %}js/pages/index.js"></script>
     {%block main_script%}
     <!-- scripts -->
     {%endblock main_script%}

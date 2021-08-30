@@ -27,14 +27,32 @@ xception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\xcep
 # Create your views here.
 def home(request):
     """this view is only for rendering home template"""
-    if not request.user.is_authenticated and request.user.is_patient:
+    if not request.user.is_authenticated:
         return redirect('/login')
+    if request.user.is_authenticated and request.user.is_doctor:
+        return redirect('/doctor')
     context = {"title":"Home | Covid Test"}
     return render(request, 'home.html', context)
 
 
 def doctorhome(request):
-    return HttpResponse('Hi I am doctor')
+    patient = Patient.objects.all()
+    condition = PatientCondition.objects.all()
+    context = {
+        'title': "Doctor Porta | Covid",
+        'patients': condition,
+    }
+    return render(request, 'doctor.html', context)
+
+def patientcondition(request,id):
+    patient = Patient.objects.get(pk=id)
+    condition = PatientCondition.objects.get(patient=patient)
+    context = {
+        'title': 'Patient Condition',
+        'condition': condition,
+        'patient': patient
+    }
+    return render(request, 'patient_profile.html', context)
 
 
 def get_ip(request):
@@ -49,8 +67,10 @@ def get_ip(request):
     return ip
 
 def detectchest(request):
-    if not request.user.is_authenticated and not request.user.is_patient:
+    if not request.user.is_authenticated:
         return redirect('/login')
+    if request.user.is_doctor:
+        return redirect('/doctor')
     if request.method == "POST":
         image = request.FILES.get('file')
         covid_user = CovidTestImage(
@@ -151,6 +171,7 @@ def myregistration(request):
             age = request.POST.get('age'),
             address = request.POST.get('address'),
             is_patient = True,
+            is_active = True
         )
         password = request.POST.get('password')
         confirm_password = request.POST.get('cpassword')
@@ -177,7 +198,8 @@ def doctorregistration(request):
             email = request.POST.get('email'),
             age = request.POST.get('age'),
             address = request.POST.get('address'),
-            is_patient = True,
+            is_doctor = True,
+            is_active = True,
         )
         password = request.POST.get('password')
         confirm_password = request.POST.get('cpassword')
@@ -288,3 +310,21 @@ def show_report_graph(request):
     }
     return render(request, 'patient_report_graph.html', context)
 
+def patient_condition(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    if request.user.is_authenticate and request.user.is_patient:
+        return redirect('/doctor')
+    else:
+        context = {
+            'title': "Patient List | Covid",
+            'patients' : Patient.objects.all(),
+        }
+        return render('patient_condition.html', context)
+
+
+def covid_symtoms_check(request):
+    context = {
+        'title': 'Symptom Check | Covid'
+    }
+    return render(request, 'covidsymptomcheck.html', context)

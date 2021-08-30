@@ -79,9 +79,14 @@
                                 <a href="{%url 'show_report_graph'%}">Report</a>
                             </li>
                             <li class="dropdown">
+                                <a href="{%url 'covid_symtoms_check'%}">Check Symptoms</a>
+
+                            </li>
+                            <li class="dropdown">
                                 <a href="{%url 'mylogout'%}">Logout</a>
 
                             </li>
+                            
                             {%elif user.is_doctor%}
                             <li class="dropdown">
                                 <a href="{%url 'show_report_graph'%}">Report</a>

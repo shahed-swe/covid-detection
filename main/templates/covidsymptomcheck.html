@@ -1,0 +1,183 @@
+{%extends 'base.html'%}
+<!--  -->
+{%load static%}
+<!--  -->
+{%block main_content%}
+<!--  -->
+<section class="page-header">
+    <div class="container">
+        <h2>Test Your Covid Symptoms</h2>
+        <ul class="thm-breadcrumb list-unstyled">
+            <li><a href="#">Home</a></li>
+            <li><span>Covid Test</span></li>
+        </ul>
+        <!-- /.thm-breadcrumb -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /.page-header -->
+
+<section class="contact-one">
+    <div class="container">
+        <!-- /.block-title -->
+        <form class="contact-one__form">
+            <div class="row">
+                <!-- /.col-lg-6 -->
+                <label for="fever">Do you have fever?</label>
+                <select class="col-lg-12 form-control" id="fever">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <label for="fever">Do you have Cough?</label>
+                <select class="col-lg-12 form-control" id="cough">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <label for="fever">Do you have fatigue?</label>
+                <select class="col-lg-12 form-control" id="fatigue">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <label for="fever">Do you have headace?</label>
+                <select class="col-lg-12 form-control" id="headace">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <label for="fever">Do you have test loss?</label>
+                <select class="col-lg-12 form-control" id="test_loss">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <label for="fever">Do you have sore throat?</label>
+                <select class="col-lg-12 form-control" id="sore_throat">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <label for="fever">Do you have vomiting?</label>
+                <select class="col-lg-12 form-control" id="vomit">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <label for="fever">Do you have diahoria?</label>
+                <select class="col-lg-12 form-control" id="diahoria">
+                    <option value="">Choose..</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <!-- /.col-lg-6 -->
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-12 text-center" style="margin-top: 25px">
+                    <button type="submit" id="submit" class="btn btn-outline-success">Submit Symptoms</button>
+                    <!-- /.thm-btn contact-one__btn -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </form>
+        <!-- /.contact-one__form -->
+        <div class="result__show" style="text-align: center;margin-top: 15px">
+            <h1 id="covid_result"></h1>
+            <h3 id="percentage"></h3>
+        </div>
+        <!-- /.result -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /.contact-one -->
+<!--  -->
+{%endblock main_content%} {%block scripts%}
+<!--  -->
+<script>
+    const submitbtn = document.getElementById("submit")
+    submitbtn.addEventListener('click', function() {
+        event.preventDefault()
+        let feverpers = "";
+        let coughpers = "";
+        let fatiguepers = "";
+        let headacepers = "";
+        let test_losspers = "";
+        let sore_throatpers = "";
+        let vomitpers = "";
+        let diahoriapers = "";
+        var fever = document.getElementById("fever").value
+        var cough = document.getElementById("cough").value
+        var fatigue = document.getElementById("fatigue").value
+        var headace = document.getElementById("headace").value
+        var test_loss = document.getElementById("test_loss").value
+        var sore_throat = document.getElementById("sore_throat").value
+        var vomit = document.getElementById("vomit").value
+        var diahoria = document.getElementById("diahoria").value
+
+        if (fever === "1") {
+            feverpers = 15;
+        } else {
+            feverpers = 0
+        }
+
+        if (cough === "1") {
+            coughpers = 15
+        } else {
+            coughpers = 0
+        }
+
+        if (fatigue === "1") {
+            fatiguepers = 10
+        } else {
+            fatiguepers = 0
+        }
+
+        if (headace === "1") {
+            headacepers = 10
+        } else {
+            headacepers = 0
+        }
+
+        if (test_loss === "1") {
+            test_losspers = 10
+        } else {
+            test_losspers = 0
+        }
+
+        if (sore_throat === "1") {
+            sore_throatpers = 10
+        } else {
+            sore_throatpers = 0
+        }
+
+        if (vomit === "1") {
+            vomitpers = 10
+        } else {
+            vomitpers = 0
+        }
+
+        if (diahoria === "1") {
+            diahoriapers = 10
+        } else {
+            diahoriapers = 0
+        }
+        const symptomized = feverpers + coughpers + fatiguepers + headacepers + test_losspers + sore_throatpers + vomitpers + diahoriapers
+        if (symptomized >= 10 && symptomized < 50) {
+            document.getElementById("covid_result").innerText = "This is normal flue take normal medicine";
+            document.getElementById("percentage").innerText = symptomized.toString() + "% Symptomized"
+        } else if (symptomized >= 50 && symptomized < 70) {
+            document.getElementById("covid_result").innerText = "Make yourself Quarentined For 7 days and check your possibility again";
+            document.getElementById("percentage").innerText = symptomized.toString() + "% Symptomized"
+        } else if (symptomized >= 70 && symptomized <= 100) {
+            document.getElementById("covid_result").innerText = "Consult with a Doctor and test the COVID-19 affection test";
+            document.getElementById("percentage").innerText = symptomized.toString() + "% Symptomized"
+
+        } else {
+            document.getElementById("covid_result").innerText = "Please select your symptoms";
+            document.getElementById("percentage").innerText = ""
+        }
+    })
+</script>
+<!--  -->
+{%endblock scripts%}

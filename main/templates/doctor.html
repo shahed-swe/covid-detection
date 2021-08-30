@@ -1,0 +1,42 @@
+{%extends 'doctorbase.html'%}
+<!--  -->
+{%load static%}
+<!--  -->
+{%block main_content%}
+<!--  -->
+<div id="page-content">
+    <h1>Patient's</h1>
+    <div class="block full">
+        <div class="block-title">
+            <h2><strong>Health</strong> Condition</h2>
+        </div>
+        <div class="table-responsive">
+            <table id="example-datatable" class="table table-vcenter table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th class="text-center"><i class="gi gi-user"></i></th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Age</th>
+                        <th>Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for i in patients%}
+                    <tr>
+                        <td class="text-center">{{i.pk}}</td>
+                        <td class="text-center"><img src="{%static 'backend/'%}img/placeholders/avatars/avatar15.jpg" alt="avatar" class="img-circle"></td>
+                        <td><a href="{%url 'patientcondition' id=i.pk %}">{{i.patient.user.first_name | title}} {{i.patient.user.last_name | title}}</a></td>
+                        <td><span class="text-center">{{i.patient.user.email}}</span></td>
+                        <td><span class="text-center">{{i.patient.user.age}}</span></td>
+                        <td><span class="text-center">{{i.condition}}</span></td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--  -->
+{%endblock main_content%}
