@@ -47,10 +47,12 @@ def doctorhome(request):
 def patientcondition(request,id):
     patient = Patient.objects.get(pk=id)
     condition = PatientCondition.objects.get(patient=patient)
+    token = Token.objects.get(user=patient.user)
     context = {
         'title': 'Patient Condition',
         'condition': condition,
-        'patient': patient
+        'patient': patient,
+        'token': token,
     }
     return render(request, 'patient_profile.html', context)
 
@@ -272,19 +274,19 @@ class ReportViewSet(generics.GenericAPIView):
                 "report_time": timezone.now
             })
 
-            if float(heart_rate) > 60 and float(heart_rate) < 100 and float(oxygen_level) > 93 and float(oxygen_level) < 97 and float(temperature) > 96 and float(temperature)< 99:
-                condition = PatientCondition(
-                    patient = request.user,
-                    condition_info = "Condition is Good right now",
-                )
-                condition.save()
+            # if float(heart_rate) > 60 and float(heart_rate) < 100 and float(oxygen_level) > 93 and float(oxygen_level) < 97 and float(temperature) > 96 and float(temperature)< 99:
+            #     condition = PatientCondition(
+            #         patient = request.user,
+            #         condition_info = "Condition is Good right now",
+            #     )
+            #     condition.save()
 
-            else:
-                condition = PatientCondition(
-                    patient = request.user,
-                    condition_info = "Condition is Good right now",
-                )
-                condition.save()
+            # else:
+            #     condition = PatientCondition(
+            #         patient = request.user,
+            #         condition_info = "Condition is Good right now",
+            #     )
+            #     condition.save()
 
             return Response({'message':'new data found'})
         else:

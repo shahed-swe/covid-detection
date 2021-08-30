@@ -46,8 +46,6 @@
                         <tr>
                             <td class="text-right"><strong>Registrations</strong></td>
                             <td><span class="label label-primary">Patient</span></td>
-
-
                         </tr>
                         <tr>
                             <td class="text-right"><strong>Status</strong></td>
@@ -59,10 +57,36 @@
                         </tr>
                     </tbody>
                 </table>
-                <!-- END Customer Info -->
+                <style>
+                    .site-header-one {
+                        background-color: #0A1C4F;
+                    }
+                    
+                    .header-tag {
+                        margin-top: 150px;
+                    }
+                </style>
+                <div class="header-tag container">
+                    <h1>Live Data Of Patient</h1>
+                </div>
+                <div class="container">Patient Data
+                    <div class="row">
+                        <div class="patient-report col-6">
+                            <canvas id="heart_rate_chart"></canvas>
+                        </div>
+                        <div class="patient-report col-6">
+                            <canvas id="oxygen_chart"></canvas>
+                        </div>
+                        <div class="patient-report col-6">
+                            <canvas id="temperature_chart"></canvas>
+                        </div>
+                    </div>
+                    <!-- END Customer Info -->
+                </div>
+                <!-- END Customer Info Block -->
             </div>
-            <!-- END Customer Info Block -->
         </div>
+
     </div>
     <!-- END Customer Content -->
 </div>
@@ -70,6 +94,118 @@
 {%endblock main_content%}
 <!--  -->
 {%block main_script%}
-<!-- start -->
-<!-- end -->
+<!-- script started -->
+<script>
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Token {{token}}'
+        }
+    };
+
+
+    var temperature = []
+    var heart_rate = []
+    var oxygen_level = []
+    var datetime = []
+    var time = []
+
+    var chartheart_rate = new Chart(document.getElementById("heart_rate_chart"), {
+        animationEnabled: true,
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                data: heart_rate,
+                label: "Heart Rate",
+                borderColor: "#3e95cd",
+                fill: false
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Patient Heart Rate Per Second'
+            }
+        }
+    });
+
+    var chartoxygen_level = new Chart(document.getElementById("oxygen_chart"), {
+        animationEnabled: true,
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                data: oxygen_level,
+                label: "Oxygen Level",
+                borderColor: "#3e95cd",
+                fill: false
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Patient Oxygen Rate Per Second'
+            }
+        }
+    });
+
+    var charttemperature = new Chart(document.getElementById("temperature_chart"), {
+        animationEnabled: true,
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                data: temperature,
+                label: "Temperature",
+                borderColor: "#3e95cd",
+                fill: false
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Patient Temperature Rate Per Second'
+            }
+        }
+    });
+
+
+
+    function loadData() {
+        setInterval(async() => {
+            const response = await fetch(`http://52.168.134.210/reports/`, config)
+                .then(response => response.json())
+                .then(data => {
+                    temperature.push(parseFloat(data[0].temperature))
+                    heart_rate.push(parseFloat(data[0].heart_rate))
+                    oxygen_level.push(parseFloat(data[0].oxygen_level))
+                    datetime.push(data[0].report_time)
+
+                })
+            if (temperature.length > 10 || heart_rate.length > 10 || oxygen_level.length > 10 || datetime.length > 10) {
+                temperature.shift(10)
+                heart_rate.shift(10)
+                oxygen_level.shift(10)
+                datetime.shift(10)
+            }
+            var date = new Date(datetime[0]);
+            var time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+            chartheart_rate.data.labels.push(time)
+            chartoxygen_level.data.labels.push(time)
+            charttemperature.data.labels.push(time)
+            if (chartheart_rate.data.labels.length > 10 || chartoxygen_level.data.labels.length > 10 || charttemperature.data.labels.length > 10) {
+                chartheart_rate.data.labels.shift();
+                chartoxygen_level.data.labels.shift();
+                charttemperature.data.labels.shift();
+            }
+            chartheart_rate.update();
+            chartoxygen_level.update();
+            charttemperature.update();
+        }, 1000)
+    }
+    loadData();
+</script>
+
+<!-- script ended -->
 {%endblock main_script%}
