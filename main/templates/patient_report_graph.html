@@ -79,7 +79,7 @@
             labels: time,
             datasets: [{
                 data: oxygen_level,
-                label: "Temperature",
+                label: "Oxygen Level",
                 borderColor: "#3e95cd",
                 fill: false
             }]
@@ -99,7 +99,7 @@
             labels: time,
             datasets: [{
                 data: temperature,
-                label: "Oxygen Level",
+                label: "Temperature",
                 borderColor: "#3e95cd",
                 fill: false
             }]
@@ -116,7 +116,7 @@
 
     function loadData() {
         setInterval(async() => {
-            const response = await fetch(`http://192.168.0.103/reports/`, config)
+            const response = await fetch(`http://52.168.134.210/reports/`, config)
                 .then(response => response.json())
                 .then(data => {
                     temperature.push(parseFloat(data[0].temperature))

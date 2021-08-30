@@ -6,22 +6,22 @@ from rest_framework.authtoken.models import Token
 from .models import *
 from .serializers import *
 from random import randint
-# from numpy.lib.type_check import _imag_dispatcher
-# from werkzeug.utils import escape, secure_filename
-# from tensorflow.keras.models import load_model
-# import matplotlib.pyplot as plt
-# import cv2
-# import numpy as np
+from numpy.lib.type_check import _imag_dispatcher
+from werkzeug.utils import escape, secure_filename
+from tensorflow.keras.models import load_model
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
 # rest framework
 from rest_framework import serializers, status, generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-# resnet_chest = load_model(str(settings.BASE_DIR) + "\main\static\models\\resnet_chest.h5")
-# vgg_chest = load_model(str(settings.BASE_DIR) + "\main\static\models\\vgg_chest.h5")
-# inception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\inceptionv3_chest.h5")
-# xception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\xception_chest.h5")
+resnet_chest = load_model(str(settings.BASE_DIR) + "\main\static\models\\resnet_chest.h5")
+vgg_chest = load_model(str(settings.BASE_DIR) + "\main\static\models\\vgg_chest.h5")
+inception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\inceptionv3_chest.h5")
+xception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\xception_chest.h5")
 
 
 # Create your views here.
@@ -31,95 +31,106 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-# def detectchest(request):
-#     if not request.user.is_authenticated:
-#         return redirect('/login')
-#     if request.method == "POST":
-#         image = request.FILES.get('file')
-#         covid_user = CovidTestImage(
-#             user = request.user,
-#             chest_xray = image,
-#         )
-#         covid_user.save()
-#         img_path = str(settings.BASE_DIR) + "\media\chestXray\{}".format(str(image))
-#         # print(img_path)
-#         image = cv2.imread(img_path)
-#         # print(image)
-#         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-#         image = cv2.resize(image, (224, 224))
-#         image = np.array(image) / 255
-#         image = np.expand_dims(image, axis=0)
+def get_ip(request):
+    try:
+        x_forward = request.META.get("HTTP_X_FORWARD_FOR")
+        if x_forward:
+            ip = x_forward.split(",")[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+    except:
+        ip = ""
+    return ip
 
-#         covid_count_neg = 0
-#         covid_count_pos = 0
-#         # resnet prediction
-#         resnet_pred = resnet_chest.predict(image)
-#         probability = resnet_pred[0]
-#         if probability[0] > 0.5:
-#             covid_count_pos += 1
-#             resnet_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
-#         else:
-#             covid_count_neg +=1
-#             resnet_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+def detectchest(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    if request.method == "POST":
+        image = request.FILES.get('file')
+        covid_user = CovidTestImage(
+            user = request.user,
+            chest_xray = image,
+        )
+        covid_user.save()
+        img_path = str(settings.BASE_DIR) + "\media\chestXray\{}".format(str(image))
+        # print(img_path)
+        image = cv2.imread(img_path)
+        # print(image)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, (224, 224))
+        image = np.array(image) / 255
+        image = np.expand_dims(image, axis=0)
 
-#         # vgg prediction
-#         vgg_pred = vgg_chest.predict(image)
-#         probability = vgg_pred[0]
-#         if probability[0] > 0.5:
-#             covid_count_pos += 1
-#             vgg_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
-#         else:
-#             covid_count_neg +=1
-#             vgg_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+        covid_count_neg = 0
+        covid_count_pos = 0
+        # resnet prediction
+        resnet_pred = resnet_chest.predict(image)
+        probability = resnet_pred[0]
+        if probability[0] > 0.5:
+            covid_count_pos += 1
+            resnet_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
+        else:
+            covid_count_neg +=1
+            resnet_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+
+        # vgg prediction
+        vgg_pred = vgg_chest.predict(image)
+        probability = vgg_pred[0]
+        if probability[0] > 0.5:
+            covid_count_pos += 1
+            vgg_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
+        else:
+            covid_count_neg +=1
+            vgg_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
         
-#         # inception prediction
-#         inception_pred = inception_chest.predict(image)
-#         probability = inception_pred[0]
-#         if probability[0] > 0.5:
-#             covid_count_pos += 1
-#             inception_chest_pred = str('{}%  COVID'.format(round(probability[0]*100),2))
-#         else:
-#             covid_count_neg +=1
-#             inception_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+        # inception prediction
+        inception_pred = inception_chest.predict(image)
+        probability = inception_pred[0]
+        if probability[0] > 0.5:
+            covid_count_pos += 1
+            inception_chest_pred = str('{}%  COVID'.format(round(probability[0]*100),2))
+        else:
+            covid_count_neg +=1
+            inception_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
 
-#         # xception prediction
-#         xception_pred = xception_chest.predict(image)
-#         probability = xception_pred[0]
-#         if probability[0] > 0.5:
-#             covid_count_pos += 1
-#             xception_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
-#         else:
-#             covid_count_neg +=1
-#             xception_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+        # xception prediction
+        xception_pred = xception_chest.predict(image)
+        probability = xception_pred[0]
+        if probability[0] > 0.5:
+            covid_count_pos += 1
+            xception_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
+        else:
+            covid_count_neg +=1
+            xception_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
 
-#         if covid_count_pos > covid_count_neg:
-#             res = True
-#         else:
-#             res = False
+        if covid_count_pos > covid_count_neg:
+            res = True
+        else:
+            res = False
 
-#         covid_result = CovidResultData(
-#             user = request.user,
-#             resnet = resnet_chest_pred,
-#             vgg = vgg_chest_pred,
-#             inception = inception_chest_pred,
-#             exception = xception_chest_pred,
-#             covid_result = res
-#         )
-#         covid_result.save()
+        covid_result = CovidResultData(
+            user = request.user,
+            resnet = resnet_chest_pred,
+            vgg = vgg_chest_pred,
+            inception = inception_chest_pred,
+            exception = xception_chest_pred,
+            covid_result = res
+        )
+        covid_result.save()
 
-#         context = {
-#             "title":"Covid Result | Covid Test",
-#             "resnet_chest_pred":resnet_chest_pred,
-#             "vgg_chest_pred":vgg_chest_pred,
-#             "inception_chest_pred":inception_chest_pred,
-#             "xception_chest_pred": xception_chest_pred,
+        context = {
+            "title":"Covid Result | Covid Test",
+            "resnet_chest_pred":resnet_chest_pred,
+            "vgg_chest_pred":vgg_chest_pred,
+            "inception_chest_pred":inception_chest_pred,
+            "xception_chest_pred": xception_chest_pred,
 
-#         }
-#         return render(request, 'results.html', context)
-#     context = {
-#         "title":"Detect Chest | Covid Test",
-#     }
-#     return render(request, 'detectcovid.html', context)
+        }
+        return render(request, 'results.html', context)
+    context = {
+        "title":"Detect Chest | Covid Test",
+    }
+    return render(request, 'detectcovid.html', context)
 
 
 def myregistration(request):
@@ -153,6 +164,7 @@ def mylogin(request):
     """this view is only for authenticating a user"""
     if request.user.is_authenticated:
         return redirect('/')
+    print(get_ip(request))
 
     if request.method == "POST":
         email = request.POST.get('email')
@@ -211,6 +223,7 @@ class ReportViewSet(generics.GenericAPIView):
             return Response({'message':'No data'})
 
     def get(self, request, format=None):
+        print(get_ip(request))
         """this will work only when a user try to get those temporary data"""
         newdata = PatientTestData(self.reportdata[::-1], many=True).data
         filterdata = newdata[0:1]
@@ -222,6 +235,7 @@ def show_report_graph(request):
         return redirect('/login')
     if request.user.is_doctor:
         return redirect('/')
+    print(get_ip(request))
     context = {
         "title": "Patient Report Graph",
         "token": Token.objects.get(user=request.user)
