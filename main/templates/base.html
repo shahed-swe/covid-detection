@@ -31,7 +31,11 @@
     <!-- template styles -->
     <link rel="stylesheet" href="{%static 'css/main.css'%}">
     <link rel="stylesheet" href="{%static 'css/responsive.css'%}">
-
+    <style>
+        .stricked-menu.stricky-fixed {
+            display: none !important;
+        }
+    </style>
 
 </head>
 
@@ -238,9 +242,8 @@
     <script src="{%static 'js/theme.js'%}"></script>
     <script src="{%static 'js/testimonials-owl.carousel.config.js'%}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    {% comment %} <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> {% endcomment %}
-
-    {%block scripts%}
+    {% comment %}
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> {% endcomment %} {%block scripts%}
     <!--  -->
     {%endblock scripts%}
 

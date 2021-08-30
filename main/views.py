@@ -27,8 +27,14 @@ xception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\xcep
 # Create your views here.
 def home(request):
     """this view is only for rendering home template"""
+    if not request.user.is_authenticated and request.user.is_patient:
+        return redirect('/login')
     context = {"title":"Home | Covid Test"}
     return render(request, 'home.html', context)
+
+
+def doctorhome(request):
+    return HttpResponse('Hi I am doctor')
 
 
 def get_ip(request):
@@ -43,7 +49,7 @@ def get_ip(request):
     return ip
 
 def detectchest(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated and not request.user.is_patient:
         return redirect('/login')
     if request.method == "POST":
         image = request.FILES.get('file')
@@ -68,40 +74,40 @@ def detectchest(request):
         probability = resnet_pred[0]
         if probability[0] > 0.5:
             covid_count_pos += 1
-            resnet_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
+            resnet_chest_pred = str('{}% Possibility Of Covid'.format(round(probability[0]*100),2))
         else:
             covid_count_neg +=1
-            resnet_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+            resnet_chest_pred = str('{}% Possibility Of NonCovid'.format(round((1 - probability[0]) * 100),2))
 
         # vgg prediction
         vgg_pred = vgg_chest.predict(image)
         probability = vgg_pred[0]
         if probability[0] > 0.5:
             covid_count_pos += 1
-            vgg_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
+            vgg_chest_pred = str('{}% Possibility Of COVID'.format(round(probability[0]*100),2))
         else:
             covid_count_neg +=1
-            vgg_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+            vgg_chest_pred = str('{}% Possibility Of NonCovid'.format(round((1 - probability[0]) * 100),2))
         
         # inception prediction
         inception_pred = inception_chest.predict(image)
         probability = inception_pred[0]
         if probability[0] > 0.5:
             covid_count_pos += 1
-            inception_chest_pred = str('{}%  COVID'.format(round(probability[0]*100),2))
+            inception_chest_pred = str('{}%  Possibility Of COVID'.format(round(probability[0]*100),2))
         else:
             covid_count_neg +=1
-            inception_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+            inception_chest_pred = str('{}% Possibility Of NonCovid'.format(round((1 - probability[0]) * 100),2))
 
         # xception prediction
         xception_pred = xception_chest.predict(image)
         probability = xception_pred[0]
         if probability[0] > 0.5:
             covid_count_pos += 1
-            xception_chest_pred = str('{}% COVID'.format(round(probability[0]*100),2))
+            xception_chest_pred = str('{}% Possibility Of COVID'.format(round(probability[0]*100),2))
         else:
             covid_count_neg +=1
-            xception_chest_pred = str('{}% NonCovid'.format(round((1 - probability[0]) * 100),2))
+            xception_chest_pred = str('{}% Possibility Of NonCovid'.format(round((1 - probability[0]) * 100),2))
 
         if covid_count_pos > covid_count_neg:
             res = True
@@ -144,12 +150,14 @@ def myregistration(request):
             email = request.POST.get('email'),
             age = request.POST.get('age'),
             address = request.POST.get('address'),
+            is_patient = True,
         )
         password = request.POST.get('password')
         confirm_password = request.POST.get('cpassword')
         if password == confirm_password:
             user.set_password(password)
             user.save()
+            Patient.objects.create(user=user)
             Token.objects.create(user=user)
             login(request, user)
             return redirect('/')
@@ -158,6 +166,33 @@ def myregistration(request):
 
     context = {"title":"Registraion  | Covid Test"}
     return render(request, 'registration.html', context)
+
+def doctorregistration(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+    if request.method == "POST":
+        user = User(
+            first_name = request.POST.get('first_name'),
+            last_name = request.POST.get('last_name'),
+            email = request.POST.get('email'),
+            age = request.POST.get('age'),
+            address = request.POST.get('address'),
+            is_patient = True,
+        )
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('cpassword')
+        if password == confirm_password:
+            user.set_password(password)
+            user.save()
+            Doctor.objects.create(user=user)
+            Token.objects.create(user=user)
+            login(request, user)
+            return redirect('/')
+        else:
+            return redirect('/register')
+
+    context = {"title":"Doctor Registraion  | Covid Test"}
+    return render(request, 'doctorregistration.html', context)
 
 
 def mylogin(request):
@@ -174,7 +209,10 @@ def mylogin(request):
             user = authenticate(email=email, password=password)
             if user != None:
                 login(request, user)
-                return redirect('/')
+                if request.user.is_patient:
+                    return redirect('/')
+                else:
+                    return redirect('/doctor')
             else:
                 return redirect('/login')
     context = {"title":"Login | Covid Test"}
@@ -213,10 +251,18 @@ class ReportViewSet(generics.GenericAPIView):
             })
 
             if float(heart_rate) > 60 and float(heart_rate) < 100 and float(oxygen_level) > 93 and float(oxygen_level) < 97 and float(temperature) > 96 and float(temperature)< 99:
-                print("Condition is ok right now")
+                condition = PatientCondition(
+                    patient = request.user,
+                    condition_info = "Condition is Good right now",
+                )
+                condition.save()
 
             else:
-                print("Condition is not good. Please checkup your patient")
+                condition = PatientCondition(
+                    patient = request.user,
+                    condition_info = "Condition is Good right now",
+                )
+                condition.save()
 
             return Response({'message':'new data found'})
         else:
