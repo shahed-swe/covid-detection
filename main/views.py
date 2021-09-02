@@ -6,10 +6,7 @@ from rest_framework.authtoken.models import Token
 from .models import *
 from .serializers import *
 from random import randint
-from numpy.lib.type_check import _imag_dispatcher
-from werkzeug.utils import escape, secure_filename
 from tensorflow.keras.models import load_model
-import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 # rest framework
@@ -162,7 +159,7 @@ def detectchest(request):
 
 
 def myregistration(request):
-    """this view is for registering user"""
+    """this view is for registering user as patient"""
     if request.user.is_authenticated:
         return redirect('/')
     if request.method == "POST":
@@ -269,7 +266,7 @@ class ReportViewSet(generics.GenericAPIView):
         if heart_rate != "" and oxygen_level != "" and temperature != "":
             self.reportdata.append({
                 "heart_rate" : heart_rate,
-                "oxygen_level" : randint(93, 97),
+                "oxygen_level" : randint(96, 98),
                 "temperature" : temperature,
                 "report_time": timezone.now
             })
