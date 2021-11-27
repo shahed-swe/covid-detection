@@ -15,10 +15,10 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-resnet_chest = load_model(str(settings.BASE_DIR) + "\main\static\models\\resnet_chest.h5")
-vgg_chest = load_model(str(settings.BASE_DIR) + "\main\static\models\\vgg_chest.h5")
-inception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\inceptionv3_chest.h5")
-xception_chest  = load_model(str(settings.BASE_DIR) + "\main\static\models\\xception_chest.h5")
+resnet_chest = load_model(str(settings.BASE_DIR) + "/main/static/models/resnet_chest.h5")
+vgg_chest = load_model(str(settings.BASE_DIR) + "/main/static/models/vgg_chest.h5")
+inception_chest  = load_model(str(settings.BASE_DIR) + "/main/static/models/inceptionv3_chest.h5")
+xception_chest  = load_model(str(settings.BASE_DIR) + "/main/static/models/xception_chest.h5")
 
 
 # Create your views here.
