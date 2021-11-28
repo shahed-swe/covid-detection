@@ -77,7 +77,7 @@ def detectchest(request):
             chest_xray = image,
         )
         covid_user.save()
-        img_path = str(settings.BASE_DIR) + "\media\chestXray\{}".format(str(image))
+        img_path = str(settings.BASE_DIR) + "/media/chestXray/{}".format(str(image))
         # print(img_path)
         image = cv2.imread(img_path)
         # print(image)
