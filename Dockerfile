@@ -6,6 +6,6 @@ COPY ./requirements.txt /diu/requirements.txt
 RUN python -m pip install --upgrade pip
 RUN sudo apt-get install virtualenv && virtualenv env
 RUN source env/bin/activate
-RUN apt-get update && apt-get install -y python-opencv
+RUN apt-get update && apt-get install -y python-opencv && apt-get install -y python-opencv-contrib
 RUN pip install -r requirements.txt
 COPY . /diu
