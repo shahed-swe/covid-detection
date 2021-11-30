@@ -47,12 +47,12 @@ void loop() {
     if(WiFi.status() == WL_CONNECTED){
       WiFiClient client;
       HTTPClient http;
-      const char* server = "http://192.168.0.103/reports/";
+      const char* server = "http://20.120.113.1/reports/";
       Signal = analogRead(PulseSensorHRWire);
       float bpm = ((Signal / 4) / 3.1);
       http.begin(client, server);
       http.addHeader("Content-Type","application/x-www-form-urlencoded");
-      http.addHeader("Authorization","Token ac0308a6bbe5e5592e4ef8fa76f6ec95a003ddb4");
+      http.addHeader("Authorization","Token 3c17205ee7f50f4192d98fdc73c7d8384b1b5d2a");
       if(mlx.readAmbientTempC() != 0.0 && mlx.readObjectTempC() != 0.0 && mlx.readAmbientTempF() != 0.0){
         String requestData = "heart_rate="+String(bpm,2)+"&oxygen_level="+String(bpm,2)+"&temperature="+String(mlx.readAmbientTempF(),2);
         int dataCode = http.POST(requestData);
