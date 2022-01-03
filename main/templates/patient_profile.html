@@ -174,7 +174,7 @@
 
     function loadData() {
         setInterval(async() => {
-            const response = await fetch(`http://52.168.134.210/reports/`, config)
+            const response = await fetch(`http://52.249.249.92/reports/`, config)
                 .then(response => response.json())
                 .then(data => {
                     temperature.push(parseFloat(data[0].temperature))
